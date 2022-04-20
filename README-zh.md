@@ -1,14 +1,14 @@
 ## kg_charts
-## kg_charts icon library. At present, there are only radar charts. Other types of charts may be added later
+## kg_charts 图标库，目前只有雷达图表，后期可能新增其他类型图表
 
-### Start
+### 开始集成
 
 ```dart
 dependencies:
   kg_charts: ^0.0.1
 ```
 
-The effect of radar chart is as follows
+雷达图表效果如下
 
 ![](art/img1.jpg)
 
@@ -20,11 +20,11 @@ The effect of radar chart is as follows
 
 ![](art/img5.jpg)
 
-caption
+图片说明
 
 ![](art/img1.jpg)
 
-Usage example:
+使用方法例：
 
 ```dart
 
@@ -72,15 +72,13 @@ RadarWidget(
 
 ```
 
-Parameter Description:
+参数说明：
 
-
-
-| Parameter  | type  | necessary  | description
+| 参数 | 类型 | 是否必要 | 说明
 |--|--|--|--|
-| radarMap| RadarMapModel| yes | includes legend, radar point, radar data, radius, radar type (round, square), maximum width of text, and several lines drawn inside (linemodel includes drawing line color, text size, etc.  |
-| textStyle | style | no | color and size of external drawing text |
-|isNeedDrawLegend  | bool  |  no |  defalut true |
-| lineText | fun | no  |the text drawn on the internal line is dynamically generated according to the data. If it is empty, it will not be displayed |
-|dilogText  |  fun | no  | click the dialog that appears and generate it dynamically according to the data. If it is empty, it will not be displayed |
-| outLineText | fun  | no  | the text drawn on the external line is dynamically generated according to the data. If it is empty, it will not be displaye |
+| radarMap| RadarMapModel| 是| 包含 图例，雷达点，雷达数据，半径 ，雷达种类（圆形，方形），文字最大宽度，内部画几条线（LineModel中包含绘制线颜色，文字大小等）  |
+| textStyle | style | 否 | 外部绘制文字颜色与大小 |
+|isNeedDrawLegend  | bool  |  否 | 默认为true |
+| lineText | fun | 否  | 内部线上画的文字，根据数据动态生成，如果为空则不展示 |
+|dilogText  |  fun | 否  | 点击出现的dialog，根据数据动态生成，如果为空则不展示 |
+| outLineText | fun  | 否  | 外部线上画的文字，根据数据动态生成，如果为空则不展示 |

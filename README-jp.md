@@ -1,14 +1,14 @@
 ## kg_charts
-## kg_charts icon library. At present, there are only radar charts. Other types of charts may be added later
+## kg_charts アイコンライブラリは、現在レーダーグラフのみで、後期に他のタイプのグラフが追加される可能性があります
 
-### Start
+### 開始
 
 ```dart
 dependencies:
   kg_charts: ^0.0.1
 ```
 
-The effect of radar chart is as follows
+レーダーグラフの効果は以下の通りです
 
 ![](art/img1.jpg)
 
@@ -20,11 +20,13 @@ The effect of radar chart is as follows
 
 ![](art/img5.jpg)
 
-caption
+画像の説明
+
+
 
 ![](art/img1.jpg)
 
-Usage example:
+使用方法例:
 
 ```dart
 
@@ -72,15 +74,13 @@ RadarWidget(
 
 ```
 
-Parameter Description:
+パラメータの説明:
 
-
-
-| Parameter  | type  | necessary  | description
+| パラメータ | タイプ | 必要かどうか | 説明
 |--|--|--|--|
-| radarMap| RadarMapModel| yes | includes legend, radar point, radar data, radius, radar type (round, square), maximum width of text, and several lines drawn inside (linemodel includes drawing line color, text size, etc.  |
-| textStyle | style | no | color and size of external drawing text |
-|isNeedDrawLegend  | bool  |  no |  defalut true |
-| lineText | fun | no  |the text drawn on the internal line is dynamically generated according to the data. If it is empty, it will not be displayed |
-|dilogText  |  fun | no  | click the dialog that appears and generate it dynamically according to the data. If it is empty, it will not be displayed |
-| outLineText | fun  | no  | the text drawn on the external line is dynamically generated according to the data. If it is empty, it will not be displaye |
+| radarMap| RadarMapModel| yes | 図例、レーダーポイント、レーダーデータ、半径、レーダー種類(円形、四角形)、文字の最大幅、内部にいくつかの線(LineModelには描画線の色、文字の大きさなどが含まれています  |
+| textStyle | style | no | 外部描画文字の色とサイズ |
+|isNeedDrawLegend  | bool  |  no | デフォルトはtrue |
+| lineText | fun | no  | 内部線画の文字は、データに基づいて動的に生成され、空の場合は表示されません |
+|dilogText  |  fun | no  | 出現したdialogをクリックし、データに基づいて動的に生成し、空であれば表示しない |
+| outLineText | fun  | no  | 外部線上に描かれた文字は、データに基づいて動的に生成され、空であれば表示されない |
