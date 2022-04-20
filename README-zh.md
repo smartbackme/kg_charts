@@ -10,19 +10,19 @@ dependencies:
 
 雷达图表效果如下
 
-![](art/img1.jpg)
+![](art/img1.png)
 
-![](art/img2.jpg)
+![](art/img2.png)
 
-![](art/img3.jpg)
+![](art/img3.png)
 
-![](art/img4.jpg)
+![](art/img4.png)
 
-![](art/img5.jpg)
+![](art/img5.png)
 
 图片说明
 
-![](art/img1.jpg)
+![](art/img1.png)
 
 使用方法例：
 

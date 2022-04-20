@@ -10,21 +10,21 @@ dependencies:
 
 レーダーグラフの効果は以下の通りです
 
-![](art/img1.jpg)
+![](art/img1.png)
 
-![](art/img2.jpg)
+![](art/img2.png)
 
-![](art/img3.jpg)
+![](art/img3.png)
 
-![](art/img4.jpg)
+![](art/img4.png)
 
-![](art/img5.jpg)
+![](art/img5.png)
 
 画像の説明
 
 
 
-![](art/img1.jpg)
+![](art/img1.png)
 
 使用方法例:
 

@@ -10,19 +10,19 @@ dependencies:
 
 The effect of radar chart is as follows
 
-![](art/img1.jpg)
+![](art/img1.png)
 
-![](art/img2.jpg)
+![](art/img2.png)
 
-![](art/img3.jpg)
+![](art/img3.png)
 
-![](art/img4.jpg)
+![](art/img4.png)
 
-![](art/img5.jpg)
+![](art/img5.png)
 
 caption
 
-![](art/img1.jpg)
+![](art/img1.png)
 
 Usage example:
 
