@@ -22,7 +22,7 @@ dependencies:
 
 图片说明
 
-![](art/img1.png)
+![](art/img.png)
 
 使用方法例：
 

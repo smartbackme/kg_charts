@@ -22,7 +22,7 @@ The effect of radar chart is as follows
 
 caption
 
-![](art/img1.png)
+![](art/img.png)
 
 Usage example:
 
