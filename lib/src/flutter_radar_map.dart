@@ -6,11 +6,12 @@ import 'package:flutter/material.dart';
 import 'radar_map_model.dart';
 import 'radar_utils.dart';
 
+@immutable
 class RadarWidget extends StatefulWidget {
   //数据传入
   final RadarMapModel radarMap;
   //文字风格
-  TextStyle? textStyle;
+  final TextStyle? textStyle;
   //是否绘制图例
   final bool? isNeedDrawLegend;
 
@@ -18,9 +19,8 @@ class RadarWidget extends StatefulWidget {
   final DialogText? dilogText;
   final OutLineText? outLineText;
 
-  RadarWidget({Key? key, required this.radarMap, this.textStyle, this.isNeedDrawLegend = true,this.lineText,this.dilogText,this.outLineText}):super(key:key){
+  RadarWidget({Key? key, required this.radarMap, this.textStyle = const TextStyle(color: Colors.black), this.isNeedDrawLegend = true,this.lineText,this.dilogText,this.outLineText}):super(key:key){
     assert(radarMap.legend.length == radarMap.data.length);
-    textStyle ??= TextStyle(color: Colors.black,fontSize: radarMap.radius * 0.10);
   }
 
 
@@ -29,9 +29,9 @@ class RadarWidget extends StatefulWidget {
 }
 
 class _RadarMapWidgetState extends State<RadarWidget> with SingleTickerProviderStateMixin {
-  double _angle = 0.0;
-  late AnimationController controller; // 动画控制器
-  late Animation<double> animation; // 动画实例
+  // double _angle = 0.0;
+  // late AnimationController controller; // 动画控制器
+  // late Animation<double> animation; // 动画实例
   double top = 0;
   double bottom = 0;
   List<Rect> node = [];
@@ -41,26 +41,26 @@ class _RadarMapWidgetState extends State<RadarWidget> with SingleTickerProviderS
   void initState() {
     super.initState();
 
-    // 创建 Animation对象
-    controller = AnimationController(duration: Duration(milliseconds: widget.radarMap.duration), vsync: this);
-    // 创建曲线插值器
-    var curveTween = CurveTween(curve: Cubic(0.96, 0.13, 0.1, 1.2));
-    // 定义估值器
-    var tween = Tween(begin: 0.0, end: 360.0);
-    // 插值器根据时间产生值，并提供给估值器，作为animation的value
-    animation = tween.animate(curveTween.animate(controller));
-    animation.addListener(() {
-      setState(() {
-        _angle = animation.value;
-      });
-    });
-    controller.forward();
+    // // 创建 Animation对象
+    // controller = AnimationController(duration: Duration(milliseconds: widget.radarMap.duration), vsync: this);
+    // // 创建曲线插值器
+    // var curveTween = CurveTween(curve: Cubic(0.96, 0.13, 0.1, 1.2));
+    // // 定义估值器
+    // var tween = Tween(begin: 0.0, end: 360.0);
+    // // 插值器根据时间产生值，并提供给估值器，作为animation的value
+    // animation = tween.animate(curveTween.animate(controller));
+    // animation.addListener(() {
+    //   setState(() {
+    //     _angle = animation.value;
+    //   });
+    // });
+    // controller.forward();
   }
 
   @override
   void dispose() {
-    controller.dispose();
-    animation.removeListener(() {});
+    // controller.dispose();
+    // animation.removeListener(() {});
     super.dispose();
   }
 
@@ -127,33 +127,33 @@ class _RadarMapWidgetState extends State<RadarWidget> with SingleTickerProviderS
       width: MediaQuery.of(context).size.width,
       child: Column(children: [
 
-      GestureDetector(
-          child: paint,
-          onTapUp: (TapUpDetails details){
-            painter.tapUp(details);
-          },
-          onTapDown: (TapDownDetails details){
-            painter.tapDown(details);
-            _counter.value++;
-          }),
+        GestureDetector(
+            child: paint,
+            onTapUp: (TapUpDetails details){
+              painter.tapUp(details);
+            },
+            onTapDown: (TapDownDetails details){
+              painter.tapDown(details);
+              _counter.value++;
+            }),
         Offstage(
           offstage: !widget.isNeedDrawLegend!,
           child: Container(
             width: double.infinity,
             margin: const EdgeInsets.only(top:20,bottom: 20,left: 30,right: 30),
-              child: Wrap(
-                spacing: 8.0,
-                runSpacing: 4.0,
-                alignment: WrapAlignment.spaceAround,
-                children: widget.radarMap.legend.map((item) => buildLegend(item.name, item.color,textColor: item.textColor,textFontSize: item.textFontSize)).toList(),
-              ),
+            child: Wrap(
+              spacing: 8.0,
+              runSpacing: 4.0,
+              alignment: WrapAlignment.spaceAround,
+              children: widget.radarMap.legend.map((item) => buildLegend(item.name, item.color,textColor: item.textColor,textFontSize: item.textFontSize)).toList(),
+            ),
           ),
         ),
       ],
       ),
     );
   }
-  // MainAxisAlignment.spaceAround
+// MainAxisAlignment.spaceAround
 
 
 
@@ -450,7 +450,7 @@ class RadarMapPainter extends CustomPainter {
       // );
       final paragraphBuilder = ui.ParagraphBuilder(ui.ParagraphStyle(
           textAlign: TextAlign.center,
-          fontSize: textStyle!.fontSize,
+          fontSize: textStyle!.fontSize??radarMap.radius * 0.10,
           fontWeight: FontWeight.normal));
       paragraphBuilder.pushStyle(ui.TextStyle(color: textStyle!.color , textBaseline: ui.TextBaseline.alphabetic));
       paragraphBuilder.addText(radarMap.indicator[i].name);
@@ -522,33 +522,33 @@ class RadarMapPainter extends CustomPainter {
     //
   }
 
-
-  /// 绘制文字
-  drawText(
-    Canvas canvas,
-    String text,
-    Offset offset, {
-    // Color color = Colors.black,
-    double maxWith = 100,
-    // double fontSize,
-    String? fontFamily,
-    TextAlign textAlign = TextAlign.center,
-    FontWeight fontWeight = FontWeight.normal,
-  }) {
-    var paragraphBuilder = ui.ParagraphBuilder(
-      ui.ParagraphStyle(
-        fontFamily: fontFamily,
-        textAlign: textAlign,
-        fontSize: textStyle!.fontSize ?? radarMap.radius * 0.16,
-        fontWeight: fontWeight,
-      ),
-    );
-    paragraphBuilder.pushStyle(ui.TextStyle(color: textStyle!.color ?? Colors.black, textBaseline: ui.TextBaseline.alphabetic));
-    paragraphBuilder.addText(text);
-    var paragraph = paragraphBuilder.build();
-    paragraph.layout(ui.ParagraphConstraints(width: maxWith));
-    canvas.drawParagraph(paragraph, Offset(offset.dx, offset.dy));
-  }
+  //
+  // /// 绘制文字
+  // drawText(
+  //   Canvas canvas,
+  //   String text,
+  //   Offset offset, {
+  //   // Color color = Colors.black,
+  //   double maxWith = 100,
+  //   // double fontSize,
+  //   String? fontFamily,
+  //   TextAlign textAlign = TextAlign.center,
+  //   FontWeight fontWeight = FontWeight.normal,
+  // }) {
+  //   var paragraphBuilder = ui.ParagraphBuilder(
+  //     ui.ParagraphStyle(
+  //       fontFamily: fontFamily,
+  //       textAlign: textAlign,
+  //       fontSize: textStyle!.fontSize ?? radarMap.radius * 0.16,
+  //       fontWeight: fontWeight,
+  //     ),
+  //   );
+  //   paragraphBuilder.pushStyle(ui.TextStyle(color: textStyle!.color ?? Colors.black, textBaseline: ui.TextBaseline.alphabetic));
+  //   paragraphBuilder.addText(text);
+  //   var paragraph = paragraphBuilder.build();
+  //   paragraph.layout(ui.ParagraphConstraints(width: maxWith));
+  //   canvas.drawParagraph(paragraph, Offset(offset.dx, offset.dy));
+  // }
 
   //绘制文本弹框
   void drawInfoDialog(ui.Canvas canvas) {
@@ -561,7 +561,7 @@ class RadarMapPainter extends CustomPainter {
       // }
       //
 
-    IndicatorModel indicatorModel = radarMap.indicator[tab.index!];
+      IndicatorModel indicatorModel = radarMap.indicator[tab.index!];
       double maxWidth = radarMap.dialogModel?.maxWidth??150.0;
 
       final paragraphBuilder = ui.ParagraphBuilder(ui.ParagraphStyle(
