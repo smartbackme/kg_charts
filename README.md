@@ -5,24 +5,24 @@
 
 ```dart
 dependencies:
-  kg_charts: ^0.0.3
+  kg_charts: ^0.0.4
 ```
 
 The effect of radar chart is as follows
 
-![](art/img1.png)
+![](https://github.com/smartbackme/kg_charts/blob/main/art/img1.png)
 
-![](art/img2.png)
+![](https://github.com/smartbackme/kg_charts/blob/main/art/img2.png)
 
-![](art/img3.png)
+![](https://github.com/smartbackme/kg_charts/blob/main/art/img3.png)
 
-![](art/img4.png)
+![](https://github.com/smartbackme/kg_charts/blob/main/art/img4.png)
 
-![](art/img5.png)
+![](https://github.com/smartbackme/kg_charts/blob/main/art/img5.png)
 
 caption
 
-![](art/img.png)
+![](https://github.com/smartbackme/kg_charts/blob/main/art/img.png)
 
 Usage example:
 

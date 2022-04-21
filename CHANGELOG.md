@@ -9,3 +9,7 @@
 ## 0.0.3
 
 * optimize & fixbug
+
+## 0.0.4
+
+* optimize readme
