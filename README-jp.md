@@ -5,7 +5,7 @@
 
 ```dart
 dependencies:
-  kg_charts: ^0.0.1
+  kg_charts: ^0.0.2
 ```
 
 レーダーグラフの効果は以下の通りです

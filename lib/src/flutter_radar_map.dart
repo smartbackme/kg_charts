@@ -575,15 +575,18 @@ class RadarMapPainter extends CustomPainter {
       paragraphBuilder.addText(dilogText!.call(indicatorModel,legendModels,mapDataModels));
       var paragraph = paragraphBuilder.build();
       paragraph.layout(ui.ParagraphConstraints(width: maxWidth));
-      var rectx = tab.x! - paragraph.width/2;
-      var recty = tab.y! + ((tab.y!>0)?-paragraph.height-sin(45)*10:sin(45)*10);
+      var bian = 6;
+      var sanjiao = 10;
+      var rectx = tab.x! - paragraph.width/2 ;
+      var recty = tab.y! + ((tab.y!>0)?-paragraph.height-sin(45)*sanjiao - bian:sin(45)*sanjiao+bian);
 
-      var rect = RRect.fromLTRBR(rectx, recty, paragraph.width +rectx, paragraph.height+recty,const Radius.circular(15));
+
+      var rect = RRect.fromLTRBR(rectx, recty -bian, paragraph.width +rectx , paragraph.height+recty +bian ,const Radius.circular(15));
       canvas.drawRRect(rect, mDialogPaint);
 
       mDialogPath.moveTo(tab.x!, tab.y!);
-      mDialogPath.lineTo(tab.x! -10,tab.y!+ ((tab.y!>0)?-10:10));
-      mDialogPath.lineTo(tab.x! +10,tab.y!+((tab.y!>0)?-10:10));
+      mDialogPath.lineTo(tab.x! -sanjiao,tab.y!+ ((tab.y!>0)?-sanjiao:sanjiao));
+      mDialogPath.lineTo(tab.x! +sanjiao,tab.y!+((tab.y!>0)?-sanjiao:sanjiao));
       canvas.drawPath(mDialogPath,mDialogPaint);
       var of = Offset(rectx,recty);
       canvas.drawParagraph(paragraph, of);

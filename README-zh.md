@@ -5,7 +5,7 @@
 
 ```dart
 dependencies:
-  kg_charts: ^0.0.1
+  kg_charts: ^0.0.2
 ```
 
 雷达图表效果如下
