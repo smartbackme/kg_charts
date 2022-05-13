@@ -5,7 +5,7 @@
 
 ```dart
 dependencies:
-  kg_charts: ^0.0.4
+  kg_charts: ^0.0.5
 ```
 
 雷达图表效果如下
@@ -29,7 +29,8 @@ dependencies:
 ```dart
 
 RadarWidget(
-            radarMap: RadarMapModel(
+                skewing: 0,
+                radarMap: RadarMapModel(
                 legend: [
                   LegendModel('10/10',const Color(0XFF0EBD8D)),
                   LegendModel('10/11',const Color(0XFFEAA035)),
@@ -82,3 +83,4 @@ RadarWidget(
 | lineText | fun | 否  | 内部线上画的文字，根据数据动态生成，如果为空则不展示 |
 |dilogText  |  fun | 否  | 点击出现的dialog，根据数据动态生成，如果为空则不展示 |
 | outLineText | fun  | 否  | 外部线上画的文字，根据数据动态生成，如果为空则不展示 |
+| skewing | double  | no  | 外部有padding或者margen等，如果你需要偏移你雷达图的，这时候你需要配置雷达图偏移 |

@@ -19,7 +19,10 @@ class RadarWidget extends StatefulWidget {
   final DialogText? dilogText;
   final OutLineText? outLineText;
 
-  RadarWidget({Key? key, required this.radarMap, this.textStyle = const TextStyle(color: Colors.black), this.isNeedDrawLegend = true,this.lineText,this.dilogText,this.outLineText}):super(key:key){
+  final double? skewing;
+
+
+  RadarWidget({Key? key, required this.radarMap, this.textStyle = const TextStyle(color: Colors.black), this.isNeedDrawLegend = true,this.lineText,this.dilogText,this.outLineText,this.skewing}):super(key:key){
     assert(radarMap.legend.length == radarMap.data.length);
   }
 
@@ -88,13 +91,17 @@ class _RadarMapWidgetState extends State<RadarWidget> with SingleTickerProviderS
   // RadarUtils.getHeight(widget.radarMap.radius, widget.radarMap.indicator.length
   @override
   Widget build(BuildContext context) {
+    double sk = (widget.skewing??0.0)>40?40:(widget.skewing??0.0);
+    if(sk<0){
+      sk = 0;
+    }
     var w = MediaQuery.of(context).size.width;
     var painter = RadarMapPainter(w,top,widget.radarMap,(t,b){
       setState(() {
         top = t;
         bottom = b;
       });
-    },node,tab,textStyle: widget.textStyle,lineText: widget.lineText,outLineText: widget.outLineText,dilogText : widget.dilogText,repaint: _counter);
+    },node,tab,sk,textStyle: widget.textStyle,lineText: widget.lineText,outLineText: widget.outLineText,dilogText : widget.dilogText,repaint: _counter);
 
     CustomPaint paint = CustomPaint(
       size: Size(w, RadarUtils.getHeight(widget.radarMap.radius, widget.radarMap.indicator.length,widget.radarMap.shape)+bottom+top),
@@ -124,7 +131,6 @@ class _RadarMapWidgetState extends State<RadarWidget> with SingleTickerProviderS
     // );
 
     return Container(
-      width: MediaQuery.of(context).size.width,
       child: Column(children: [
 
         GestureDetector(
@@ -136,24 +142,24 @@ class _RadarMapWidgetState extends State<RadarWidget> with SingleTickerProviderS
               painter.tapDown(details);
               _counter.value++;
             }),
-        Offstage(
-          offstage: !widget.isNeedDrawLegend!,
-          child: Container(
-            width: double.infinity,
-            margin: const EdgeInsets.only(top:20,bottom: 20,left: 30,right: 30),
-            child: Wrap(
-              spacing: 8.0,
-              runSpacing: 4.0,
-              alignment: WrapAlignment.spaceAround,
-              children: widget.radarMap.legend.map((item) => buildLegend(item.name, item.color,textColor: item.textColor,textFontSize: item.textFontSize)).toList(),
+          Offstage(
+            offstage: !widget.isNeedDrawLegend!,
+            child: Padding(padding: EdgeInsets.only(right: sk), child: Container(
+              width: double.infinity,
+              margin: const EdgeInsets.only(top:20,bottom: 20,left: 30,right: 30),
+                child: Wrap(
+                  spacing: 8.0,
+                  runSpacing: 4.0,
+                  alignment: WrapAlignment.spaceAround,
+                  children: widget.radarMap.legend.map((item) => buildLegend(item.name, item.color,textColor: item.textColor,textFontSize: item.textFontSize)).toList(),
+                ),
             ),
-          ),
+          )),
+        ],
         ),
-      ],
-      ),
     );
   }
-// MainAxisAlignment.spaceAround
+  // MainAxisAlignment.spaceAround
 
 
 
@@ -186,7 +192,8 @@ class RadarMapPainter extends CustomPainter {
   double top;
   List<Rect> node;
   TapModel tab;
-  RadarMapPainter(this.w,this.top,this.radarMap,this._widthHeight, this.node,this.tab,{this.textStyle,this.lineText,this.dilogText,this.outLineText,Listenable? repaint}) :super(repaint: repaint){
+  double skewing;
+  RadarMapPainter(this.w,this.top,this.radarMap,this._widthHeight, this.node,this.tab,this.skewing,{this.textStyle,this.lineText,this.dilogText,this.outLineText,Listenable? repaint}) :super(repaint: repaint){
     mLinePath = Path();
     mDialogPath = Path();
     mLinePaint = Paint()
@@ -226,7 +233,7 @@ class RadarMapPainter extends CustomPainter {
       var y = details.localPosition.dy-radarMap.radius-top;
 
       if(x>=n.left && x<=n.right && y>=n.top&&y<=n.bottom){
-        tab..x=x..y=y..index=i;
+        tab..x=(x+skewing)..y=y..index=i;
         return;
       }
     }
@@ -235,7 +242,7 @@ class RadarMapPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.translate(w/2, radarMap.radius+top); // 移动坐标系
+    canvas.translate(w/2-skewing, radarMap.radius+top); // 移动坐标系
     drawInnerCircle(canvas, size);
     for (int i = 0; i < radarMap.legend.length; i++) {
       drawRadarMap(
@@ -465,7 +472,7 @@ class RadarMapPainter extends CustomPainter {
       var pianyix = sin(angle)*(paragraph.width/2 + out) ;
       var pianyiy = cos(angle)*(paragraph.height/2 + out);
       var of = Offset(0 + startRa * sin(angle)-paragraph.width/2 +pianyix, 0 - startRa * cos(angle) - paragraph.height/2 - pianyiy);
-      var rect = Rect.fromCenter(center: Offset(0 + startRa * sin(angle) +pianyix, 0 - startRa * cos(angle) - pianyiy), width: paragraph.width, height:paragraph.height);
+      var rect = Rect.fromCenter(center: Offset(0 + startRa * sin(angle) +pianyix -skewing, 0 - startRa * cos(angle) - pianyiy), width: paragraph.width, height:paragraph.height);
 
       canvas.drawParagraph(paragraph, of);
       angle += delta;
@@ -561,7 +568,7 @@ class RadarMapPainter extends CustomPainter {
       // }
       //
 
-      IndicatorModel indicatorModel = radarMap.indicator[tab.index!];
+    IndicatorModel indicatorModel = radarMap.indicator[tab.index!];
       double maxWidth = radarMap.dialogModel?.maxWidth??150.0;
 
       final paragraphBuilder = ui.ParagraphBuilder(ui.ParagraphStyle(

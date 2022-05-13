@@ -13,3 +13,7 @@
 ## 0.0.4
 
 * optimize readme
+
+## 0.0.5
+
+* optimize radar map add skewing (out widget is padding)

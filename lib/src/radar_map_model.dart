@@ -24,7 +24,8 @@ class RadarMapModel {
   //文字大小
   double? maxWidth;
 
-  RadarMapModel({required this.legend, required this.data, required this.indicator, required this.radius, this.duration = 2000, this.shape = Shape.circle,this.line,this.alpha = 80,this.dilog = true,this.dialogModel,this.outTextSize});
+
+  RadarMapModel({required this.legend, required this.data, required this.indicator, required this.radius, this.duration = 2000, this.shape = Shape.circle,this.line,this.alpha = 80,this.dilog = true,this.dialogModel,this.outTextSize,this.maxWidth});
 }
 
 

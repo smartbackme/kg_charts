@@ -5,7 +5,7 @@
 
 ```dart
 dependencies:
-  kg_charts: ^0.0.4
+  kg_charts: ^0.0.5
 ```
 
 レーダーグラフの効果は以下の通りです
@@ -31,6 +31,7 @@ dependencies:
 ```dart
 
 RadarWidget(
+            skewing: 0,
             radarMap: RadarMapModel(
                 legend: [
                   LegendModel('10/10',const Color(0XFF0EBD8D)),
@@ -84,3 +85,4 @@ RadarWidget(
 | lineText | fun | no  | 内部線画の文字は、データに基づいて動的に生成され、空の場合は表示されません |
 |dilogText  |  fun | no  | 出現したdialogをクリックし、データに基づいて動的に生成し、空であれば表示しない |
 | outLineText | fun  | no  | 外部線上に描かれた文字は、データに基づいて動的に生成され、空であれば表示されない |
+| skewing | double  | no  | 外部にはpaddingやmargenなどがあります。レーダーマップをオフセットする必要がある場合は、レーダーマップのオフセットを設定する必要があります。 |

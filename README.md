@@ -5,7 +5,7 @@
 
 ```dart
 dependencies:
-  kg_charts: ^0.0.4
+  kg_charts: ^0.0.5
 ```
 
 The effect of radar chart is as follows
@@ -29,6 +29,7 @@ Usage example:
 ```dart
 
 RadarWidget(
+            skewing: 0,
             radarMap: RadarMapModel(
                 legend: [
                   LegendModel('10/10',const Color(0XFF0EBD8D)),
@@ -84,3 +85,4 @@ Parameter Description:
 | lineText | fun | no  |the text drawn on the internal line is dynamically generated according to the data. If it is empty, it will not be displayed |
 |dilogText  |  fun | no  | click the dialog that appears and generate it dynamically according to the data. If it is empty, it will not be displayed |
 | outLineText | fun  | no  | the text drawn on the external line is dynamically generated according to the data. If it is empty, it will not be displaye |
+| skewing | double  | no  | out is padding or margen you need skewing |
