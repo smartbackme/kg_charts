@@ -21,17 +21,25 @@ class RadarWidget extends StatefulWidget {
 
   final double? skewing;
 
-
-  RadarWidget({Key? key, required this.radarMap, this.textStyle = const TextStyle(color: Colors.black), this.isNeedDrawLegend = true,this.lineText,this.dilogText,this.outLineText,this.skewing}):super(key:key){
+  RadarWidget(
+      {Key? key,
+      required this.radarMap,
+      this.textStyle = const TextStyle(color: Colors.black),
+      this.isNeedDrawLegend = true,
+      this.lineText,
+      this.dilogText,
+      this.outLineText,
+      this.skewing})
+      : super(key: key) {
     assert(radarMap.legend.length == radarMap.data.length);
   }
-
 
   @override
   _RadarMapWidgetState createState() => _RadarMapWidgetState();
 }
 
-class _RadarMapWidgetState extends State<RadarWidget> with SingleTickerProviderStateMixin {
+class _RadarMapWidgetState extends State<RadarWidget>
+    with SingleTickerProviderStateMixin {
   // double _angle = 0.0;
   // late AnimationController controller; // 动画控制器
   // late Animation<double> animation; // 动画实例
@@ -68,7 +76,8 @@ class _RadarMapWidgetState extends State<RadarWidget> with SingleTickerProviderS
   }
 
   ///构建图例
-  Widget buildLegend(String legendTitle, Color legendColor,{Color? textColor,double? textFontSize}) {
+  Widget buildLegend(String legendTitle, Color legendColor,
+      {Color? textColor, double? textFontSize}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
@@ -77,38 +86,50 @@ class _RadarMapWidgetState extends State<RadarWidget> with SingleTickerProviderS
           width: 12,
           height: 12,
           margin: const EdgeInsets.only(right: 4),
-          decoration: BoxDecoration(color: legendColor, borderRadius: BorderRadius.all(Radius.circular(6))),
+          decoration: BoxDecoration(
+              color: legendColor,
+              borderRadius: const BorderRadius.all(Radius.circular(6))),
         ),
         Text(
           legendTitle,
-          style: TextStyle(fontSize: textFontSize??10,color: textColor??Colors.black),
+          style: TextStyle(
+              fontSize: textFontSize ?? 10, color: textColor ?? Colors.black),
         )
       ],
     );
   }
-  late int elementLength;//维度 数量
+
+  late int elementLength; //维度 数量
 
   // RadarUtils.getHeight(widget.radarMap.radius, widget.radarMap.indicator.length
   @override
   Widget build(BuildContext context) {
-    double sk = (widget.skewing??0.0)>40?40:(widget.skewing??0.0);
-    if(sk<0){
+    double sk = (widget.skewing ?? 0.0) > 40 ? 40 : (widget.skewing ?? 0.0);
+    if (sk < 0) {
       sk = 0;
     }
     var w = MediaQuery.of(context).size.width;
-    var painter = RadarMapPainter(w,top,widget.radarMap,(t,b){
+    var painter = RadarMapPainter(w, top, widget.radarMap, (t, b) {
       setState(() {
         top = t;
         bottom = b;
       });
-    },node,tab,sk,textStyle: widget.textStyle,lineText: widget.lineText,outLineText: widget.outLineText,dilogText : widget.dilogText,repaint: _counter);
+    }, node, tab, sk,
+        textStyle: widget.textStyle,
+        lineText: widget.lineText,
+        outLineText: widget.outLineText,
+        dilogText: widget.dilogText,
+        repaint: _counter);
 
     CustomPaint paint = CustomPaint(
-      size: Size(w, RadarUtils.getHeight(widget.radarMap.radius, widget.radarMap.indicator.length,widget.radarMap.shape)+bottom+top),
+      size: Size(
+          w,
+          RadarUtils.getHeight(widget.radarMap.radius,
+                  widget.radarMap.indicator.length, widget.radarMap.shape) +
+              bottom +
+              top),
       painter: painter,
     );
-
-
 
     // var center = Transform.rotate(
     //   // 旋转动画
@@ -130,50 +151,52 @@ class _RadarMapWidgetState extends State<RadarWidget> with SingleTickerProviderS
     //   ),
     // );
 
-    return Container(
-      child: Column(children: [
-
+    return Column(
+      children: [
         GestureDetector(
             child: paint,
-            onTapUp: (TapUpDetails details){
+            onTapUp: (TapUpDetails details) {
               painter.tapUp(details);
             },
-            onTapDown: (TapDownDetails details){
+            onTapDown: (TapDownDetails details) {
               painter.tapDown(details);
               _counter.value++;
             }),
-          Offstage(
+        Offstage(
             offstage: !widget.isNeedDrawLegend!,
-            child: Padding(padding: EdgeInsets.only(right: sk), child: Container(
-              width: double.infinity,
-              margin: const EdgeInsets.only(top:20,bottom: 20,left: 30,right: 30),
+            child: Padding(
+              padding: EdgeInsets.only(right: sk),
+              child: Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(
+                    top: 20, bottom: 20, left: 30, right: 30),
                 child: Wrap(
                   spacing: 8.0,
                   runSpacing: 4.0,
                   alignment: WrapAlignment.spaceAround,
-                  children: widget.radarMap.legend.map((item) => buildLegend(item.name, item.color,textColor: item.textColor,textFontSize: item.textFontSize)).toList(),
+                  children: widget.radarMap.legend
+                      .map((item) => buildLegend(item.name, item.color,
+                          textColor: item.textColor,
+                          textFontSize: item.textFontSize))
+                      .toList(),
                 ),
-            ),
-          )),
-        ],
-        ),
+              ),
+            )),
+      ],
     );
   }
   // MainAxisAlignment.spaceAround
 
-
-
 }
 
-typedef LineText = String Function(int p,int length);
-typedef OutLineText = String Function(double data,double maxValue);
-typedef DialogText = String Function(IndicatorModel indicatorModel,List<LegendModel> legendModels,List<double> mapDataModels);
-typedef WidthHeight = Function(double w,double h);
+typedef LineText = String Function(int p, int length);
+typedef OutLineText = String Function(double data, double maxValue);
+typedef DialogText = String Function(IndicatorModel indicatorModel,
+    List<LegendModel> legendModels, List<double> mapDataModels);
+typedef WidthHeight = Function(double w, double h);
 
 /// canvas绘制
 class RadarMapPainter extends CustomPainter {
-
-
   RadarMapModel radarMap;
   late Paint mLinePaint; // 线画笔
   late Paint mLineInnerPaint; // 线画笔
@@ -183,17 +206,24 @@ class RadarMapPainter extends CustomPainter {
   late Path mLinePath; // 短直线路径
   late Path mDialogPath; // 短直线路径
   late Paint mDialogPaint; // 短直线路径
-  late int elementLength;//维度 数量
+  late int elementLength; //维度 数量
   LineText? lineText;
   DialogText? dilogText;
   OutLineText? outLineText;
-  WidthHeight _widthHeight;
+  final WidthHeight _widthHeight;
   double w;
   double top;
   List<Rect> node;
   TapModel tab;
   double skewing;
-  RadarMapPainter(this.w,this.top,this.radarMap,this._widthHeight, this.node,this.tab,this.skewing,{this.textStyle,this.lineText,this.dilogText,this.outLineText,Listenable? repaint}) :super(repaint: repaint){
+  RadarMapPainter(this.w, this.top, this.radarMap, this._widthHeight, this.node,
+      this.tab, this.skewing,
+      {this.textStyle,
+      this.lineText,
+      this.dilogText,
+      this.outLineText,
+      Listenable? repaint})
+      : super(repaint: repaint) {
     mLinePath = Path();
     mDialogPath = Path();
     mLinePaint = Paint()
@@ -216,24 +246,26 @@ class RadarMapPainter extends CustomPainter {
     elementLength = radarMap.indicator.length;
   }
 
-  void tapUp(TapUpDetails details){
-  }
+  void tapUp(TapUpDetails details) {}
 
-  void tapDown(TapDownDetails details){
+  void tapDown(TapDownDetails details) {
     // // print("${details.globalPosition.dx-w/2} . ${details.globalPosition.dy-radarMap.radius-top}");
     // print("${details.localPosition.dx-w/2} . ${details.localPosition.dy-radarMap.radius-top}");
     // print("${node[0].left},${node[0].right},${node[0].top},${node[0].bottom}");
     // // print("${details.globalPosition.dx} . ${details.globalPosition.dy}");
     // // print("${details.localPosition.dx} . ${details.localPosition.dy}");
     // // print("${node.length}");
-    for (int i=0;i< node.length;i++) {
+    for (int i = 0; i < node.length; i++) {
       // print("${node[i].left} . ${node[i].top}");
       var n = node[i];
-      var x = details.localPosition.dx-w/2;
-      var y = details.localPosition.dy-radarMap.radius-top;
+      var x = details.localPosition.dx - w / 2;
+      var y = details.localPosition.dy - radarMap.radius - top;
 
-      if(x>=n.left && x<=n.right && y>=n.top&&y<=n.bottom){
-        tab..x=(x+skewing)..y=y..index=i;
+      if (x >= n.left && x <= n.right && y >= n.top && y <= n.bottom) {
+        tab
+          ..x = (x + skewing)
+          ..y = y
+          ..index = i;
         return;
       }
     }
@@ -242,14 +274,15 @@ class RadarMapPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.translate(w/2-skewing, radarMap.radius+top); // 移动坐标系
+    canvas.translate(w / 2 - skewing, radarMap.radius + top); // 移动坐标系
     drawInnerCircle(canvas, size);
     for (int i = 0; i < radarMap.legend.length; i++) {
       drawRadarMap(
           canvas,
           radarMap.data[i].data,
           radarMap.indicator.map((item) => item.maxValues).toList(),
-          mAreaPaint..color = radarMap.legend[i].color.withAlpha(radarMap.alpha));
+          mAreaPaint
+            ..color = radarMap.legend[i].color.withAlpha(radarMap.alpha));
       drawRadarPath(
           canvas,
           radarMap.data[i].data,
@@ -275,8 +308,8 @@ class RadarMapPainter extends CustomPainter {
   drawInnerCircle(Canvas canvas, Size size) {
     double innerRadius = radarMap.radius; // 内圆半径
     var line = radarMap.line;
-    int ring = line?.line??1;
-    Color ringColor = line?.color??Colors.grey;
+    int ring = line?.line ?? 1;
+    Color ringColor = line?.color ?? Colors.grey;
     if (radarMap.shape == Shape.circle) {
       /// 绘制五个圆环
       for (int s = ring; s > 0; s--) {
@@ -295,9 +328,10 @@ class RadarMapPainter extends CustomPainter {
       double delta = 2 * pi / elementLength;
       for (int s = ring; s > 0; s--) {
         ///起始位置
-        var startRa = innerRadius/ring * s;
+        var startRa = innerRadius / ring * s;
 
         Path mapPath = Path();
+
         ///角度
         double angle = 0;
         mapPath.moveTo(0, -startRa);
@@ -313,32 +347,30 @@ class RadarMapPainter extends CustomPainter {
             ..style = PaintingStyle.stroke,
         );
       }
-
     }
     // 图上画文字
-    if(lineText!=null){
+    if (lineText != null) {
       // (s/ring).toStringAsFixed(2)
       var maxWidth = 100.0;
       for (int s = ring; s > 0; s--) {
         ///起始位置
-        var startRa = innerRadius/ring * s - radarMap.radius * 0.05;
-        Offset offset = Offset(-maxWidth/2, -startRa);
+        var startRa = innerRadius / ring * s - radarMap.radius * 0.05;
+        Offset offset = Offset(-maxWidth / 2, -startRa);
         // fontSize: textStyle!.fontSize ?? radarMap.radius * 0.16,
-
 
         final paragraphBuilder = ui.ParagraphBuilder(ui.ParagraphStyle(
             textAlign: TextAlign.center,
             fontSize: line?.textFontSize ?? radarMap.radius * 0.1,
             fontWeight: FontWeight.normal));
-        paragraphBuilder.pushStyle(ui.TextStyle(color: line?.textColor??Colors.black , textBaseline: ui.TextBaseline.alphabetic));
-        paragraphBuilder.addText(lineText!.call(s,ring));
+        paragraphBuilder.pushStyle(ui.TextStyle(
+            color: line?.textColor ?? Colors.black,
+            textBaseline: ui.TextBaseline.alphabetic));
+        paragraphBuilder.addText(lineText!.call(s, ring));
         var paragraph = paragraphBuilder.build();
         paragraph.layout(ui.ParagraphConstraints(width: maxWidth));
         canvas.drawParagraph(paragraph, offset);
-
       }
     }
-
 
     // 遍历画线
     for (var i = 0; i < elementLength; i++) {
@@ -354,16 +386,17 @@ class RadarMapPainter extends CustomPainter {
       canvas.restore();
     }
 
-
     canvas.save();
     canvas.restore();
   }
 
   /// 绘制区域
-  drawRadarMap(Canvas canvas, List<double> value, List<double> maxList, Paint mapPaint) {
+  drawRadarMap(
+      Canvas canvas, List<double> value, List<double> maxList, Paint mapPaint) {
     Path radarMapPath = Path();
     double step = radarMap.radius / elementLength; //每小段的长度
-    radarMapPath.moveTo(0, -value[0] / (maxList[0] / elementLength) * step); //起点
+    radarMapPath.moveTo(
+        0, -value[0] / (maxList[0] / elementLength) * step); //起点
     for (int i = 1; i < elementLength; i++) {
       double mark = value[i] / (maxList[i] / elementLength);
       var deg = pi / 180 * (360 / elementLength * i - 90);
@@ -374,7 +407,8 @@ class RadarMapPainter extends CustomPainter {
   }
 
   /// 绘制边框
-  drawRadarPath(Canvas canvas, List<double> value, List<double> maxList, Paint linePaint) {
+  drawRadarPath(Canvas canvas, List<double> value, List<double> maxList,
+      Paint linePaint) {
     Path mradarPath = Path();
     double step = radarMap.radius / value.length; //每小段的长度
     mradarPath.moveTo(0, -value[0] / (maxList[0] / value.length) * step);
@@ -387,8 +421,9 @@ class RadarMapPainter extends CustomPainter {
     canvas.drawPath(mradarPath, linePaint);
   }
 
-  void drawRadarText(ui.Canvas canvas, List<double> value, List<double> maxList, Color color) {
-    if(outLineText!=null){
+  void drawRadarText(
+      ui.Canvas canvas, List<double> value, List<double> maxList, Color color) {
+    if (outLineText != null) {
       // Path mradarPath = Path();
       double step = radarMap.radius / elementLength; //每小段的长度
       // mradarPath.moveTo(0, -value[0] / (maxList[0] / value.length) * step);
@@ -400,15 +435,17 @@ class RadarMapPainter extends CustomPainter {
 
         final paragraphBuilder = ui.ParagraphBuilder(ui.ParagraphStyle(
             textAlign: TextAlign.center,
-            fontSize: radarMap.outTextSize??10,
+            fontSize: radarMap.outTextSize ?? 10,
             fontWeight: FontWeight.normal));
-        paragraphBuilder.pushStyle(ui.TextStyle(color: color , textBaseline: ui.TextBaseline.alphabetic));
-        paragraphBuilder.addText(outLineText!.call(value[i],maxList[i]));
+        paragraphBuilder.pushStyle(ui.TextStyle(
+            color: color, textBaseline: ui.TextBaseline.alphabetic));
+        paragraphBuilder.addText(outLineText!.call(value[i], maxList[i]));
         var paragraph = paragraphBuilder.build();
         paragraph.layout(ui.ParagraphConstraints(width: maxWidth));
-        var pianyix = cos(deg)*(paragraph.width/2);
-        var pianyiy = sin(deg)*(paragraph.height/2);
-        var of = Offset(mark * step * cos(deg) -paragraph.width/2 +pianyix , mark * step * sin(deg) - paragraph.height/2 +pianyiy);
+        var pianyix = cos(deg) * (paragraph.width / 2);
+        var pianyiy = sin(deg) * (paragraph.height / 2);
+        var of = Offset(mark * step * cos(deg) - paragraph.width / 2 + pianyix,
+            mark * step * sin(deg) - paragraph.height / 2 + pianyiy);
         canvas.drawParagraph(paragraph, of);
 
         // mradarPath.lineTo(mark * step * cos(deg), mark * step * sin(deg));
@@ -416,9 +453,7 @@ class RadarMapPainter extends CustomPainter {
       // mradarPath.close();
       // canvas.drawPath(mradarPath, linePaint);
     }
-
   }
-
 
   /// 绘制顶点文字
   void drawInfoText(Canvas canvas) {
@@ -442,10 +477,11 @@ class RadarMapPainter extends CustomPainter {
 
     double innerRadius = radarMap.radius; // 内圆半径
     double delta = 2 * pi / elementLength;
-    var startRa = innerRadius ;
-    var maxWidth = radarMap.maxWidth??40.0;
+    var startRa = innerRadius;
+    var maxWidth = radarMap.maxWidth ?? 40.0;
     var top = 0.0;
     var bottom = 0.0;
+
     ///角度
     double angle = 0;
     node.clear();
@@ -457,9 +493,10 @@ class RadarMapPainter extends CustomPainter {
       // );
       final paragraphBuilder = ui.ParagraphBuilder(ui.ParagraphStyle(
           textAlign: TextAlign.center,
-          fontSize: textStyle!.fontSize??radarMap.radius * 0.10,
+          fontSize: textStyle!.fontSize ?? radarMap.radius * 0.10,
           fontWeight: FontWeight.normal));
-      paragraphBuilder.pushStyle(ui.TextStyle(color: textStyle!.color , textBaseline: ui.TextBaseline.alphabetic));
+      paragraphBuilder.pushStyle(ui.TextStyle(
+          color: textStyle!.color, textBaseline: ui.TextBaseline.alphabetic));
       paragraphBuilder.addText(radarMap.indicator[i].name);
       var paragraph = paragraphBuilder.build();
       paragraph.layout(ui.ParagraphConstraints(width: maxWidth));
@@ -469,28 +506,33 @@ class RadarMapPainter extends CustomPainter {
 
       var out = 10;
 
-      var pianyix = sin(angle)*(paragraph.width/2 + out) ;
-      var pianyiy = cos(angle)*(paragraph.height/2 + out);
-      var of = Offset(0 + startRa * sin(angle)-paragraph.width/2 +pianyix, 0 - startRa * cos(angle) - paragraph.height/2 - pianyiy);
-      var rect = Rect.fromCenter(center: Offset(0 + startRa * sin(angle) +pianyix -skewing, 0 - startRa * cos(angle) - pianyiy), width: paragraph.width, height:paragraph.height);
+      var pianyix = sin(angle) * (paragraph.width / 2 + out);
+      var pianyiy = cos(angle) * (paragraph.height / 2 + out);
+      var of = Offset(0 + startRa * sin(angle) - paragraph.width / 2 + pianyix,
+          0 - startRa * cos(angle) - paragraph.height / 2 - pianyiy);
+      var rect = Rect.fromCenter(
+          center: Offset(0 + startRa * sin(angle) + pianyix - skewing,
+              0 - startRa * cos(angle) - pianyiy),
+          width: paragraph.width,
+          height: paragraph.height);
 
       canvas.drawParagraph(paragraph, of);
       angle += delta;
 
-      if(i == 0){
+      if (i == 0) {
         top = paragraph.height + out;
       }
 
-      if(elementLength%2==0){
-        if(i == elementLength/2){
+      if (elementLength % 2 == 0) {
+        if (i == elementLength / 2) {
           bottom = paragraph.height + out;
         }
-      }else{
-        if(i == elementLength~/2){
+      } else {
+        if (i == elementLength ~/ 2) {
           bottom = paragraph.height + out;
         }
-        if(i == elementLength~/2+1){
-          if(bottom<paragraph.height){
+        if (i == elementLength ~/ 2 + 1) {
+          if (bottom < paragraph.height) {
             bottom = paragraph.height + out;
           }
         }
@@ -499,14 +541,13 @@ class RadarMapPainter extends CustomPainter {
       node.add(rect);
     }
 
-
     // print("${node.length}");
     // node.forEach((element) {
     //   print("${element.left} . ${element.top} 11");
     // });
 
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      _widthHeight.call(top,bottom);
+      _widthHeight.call(top, bottom);
     });
 
     //
@@ -559,49 +600,57 @@ class RadarMapPainter extends CustomPainter {
 
   //绘制文本弹框
   void drawInfoDialog(ui.Canvas canvas) {
-    if(tab.index!=null&&tab.x!=null&&tab.y!=null&&radarMap.dilog!&&dilogText!=null){
-      List<LegendModel> legendModels = radarMap.legend.map((item) => item).toList();
-      List<double> mapDataModels = radarMap.data.map((item) => item.data[tab.index!]).toList();
+    if (tab.index != null &&
+        tab.x != null &&
+        tab.y != null &&
+        radarMap.dilog! &&
+        dilogText != null) {
+      List<LegendModel> legendModels =
+          radarMap.legend.map((item) => item).toList();
+      List<double> mapDataModels =
+          radarMap.data.map((item) => item.data[tab.index!]).toList();
       // for(int i=0;i<radarMap.data.length;i++){
       //   legendModels.add(radarMap.legend[i]);
       //   mapDataModels.add(radarMap.data[i].data[tab.index!]);
       // }
       //
 
-    IndicatorModel indicatorModel = radarMap.indicator[tab.index!];
-      double maxWidth = radarMap.dialogModel?.maxWidth??150.0;
+      IndicatorModel indicatorModel = radarMap.indicator[tab.index!];
+      double maxWidth = radarMap.dialogModel?.maxWidth ?? 150.0;
 
       final paragraphBuilder = ui.ParagraphBuilder(ui.ParagraphStyle(
           textAlign: TextAlign.center,
-          fontSize: radarMap.dialogModel?.textFontSize??13,
+          fontSize: radarMap.dialogModel?.textFontSize ?? 13,
           fontWeight: FontWeight.normal));
-      paragraphBuilder.pushStyle(ui.TextStyle(color: Colors.white , textBaseline: ui.TextBaseline.alphabetic));
+      paragraphBuilder.pushStyle(ui.TextStyle(
+          color: Colors.white, textBaseline: ui.TextBaseline.alphabetic));
 
-
-
-      paragraphBuilder.addText(dilogText!.call(indicatorModel,legendModels,mapDataModels));
+      paragraphBuilder.addText(
+          dilogText!.call(indicatorModel, legendModels, mapDataModels));
       var paragraph = paragraphBuilder.build();
       paragraph.layout(ui.ParagraphConstraints(width: maxWidth));
       var bian = 6;
       var sanjiao = 10;
-      var rectx = tab.x! - paragraph.width/2 ;
-      var recty = tab.y! + ((tab.y!>0)?-paragraph.height-sin(45)*sanjiao - bian:sin(45)*sanjiao+bian);
+      var rectx = tab.x! - paragraph.width / 2;
+      var recty = tab.y! +
+          ((tab.y! > 0)
+              ? -paragraph.height - sin(45) * sanjiao - bian
+              : sin(45) * sanjiao + bian);
 
-
-      var rect = RRect.fromLTRBR(rectx, recty -bian, paragraph.width +rectx , paragraph.height+recty +bian ,const Radius.circular(15));
+      var rect = RRect.fromLTRBR(rectx, recty - bian, paragraph.width + rectx,
+          paragraph.height + recty + bian, const Radius.circular(15));
       canvas.drawRRect(rect, mDialogPaint);
 
       mDialogPath.moveTo(tab.x!, tab.y!);
-      mDialogPath.lineTo(tab.x! -sanjiao,tab.y!+ ((tab.y!>0)?-sanjiao:sanjiao));
-      mDialogPath.lineTo(tab.x! +sanjiao,tab.y!+((tab.y!>0)?-sanjiao:sanjiao));
-      canvas.drawPath(mDialogPath,mDialogPaint);
-      var of = Offset(rectx,recty);
+      mDialogPath.lineTo(
+          tab.x! - sanjiao, tab.y! + ((tab.y! > 0) ? -sanjiao : sanjiao));
+      mDialogPath.lineTo(
+          tab.x! + sanjiao, tab.y! + ((tab.y! > 0) ? -sanjiao : sanjiao));
+      canvas.drawPath(mDialogPath, mDialogPaint);
+      var of = Offset(rectx, recty);
       canvas.drawParagraph(paragraph, of);
       // var rect = Rect.fromCenter(center: Offset(tab.x! + ((tab.x!>0)?0:0), tab.y!), width: paragraph.width, height:paragraph.height);
 
     }
   }
-
-
-
 }
