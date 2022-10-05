@@ -27,7 +27,6 @@ void main() {
           MapDataModel([90, 90, 90, 90, 10, 20]),
         ],
         radius: 130,
-        duration: 2000,
         shape: Shape.square,
         maxWidth: 70,
         line: LineModel(4),
