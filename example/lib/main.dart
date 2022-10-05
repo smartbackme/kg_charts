@@ -41,24 +41,12 @@ class _MyAppState extends State<MyApp> {
               //   LegendModel('Normal', HexColor('#6EC9D1')),
               //   // LegendModel('High', Colors.green),
               // ],
-              splitAreaStyle: SplitAreaStyle(
-                colors: [
-                  HexColor('#EDEEEE'),
-                  HexColor('#CEE8EA'),
-                  HexColor('#A9DDE1'),
-                  HexColor('#6EC9D1'),
-                ],
+              splitAreaStyle: const SplitAreaStyle(
+                colors: [Colors.blue, Colors.blue],
                 alpha: 255,
               ),
-              visualMap: VisualMap(colors: [
-                HexColor('#EDEEEE'),
-                HexColor('#CEE8EA'),
-                HexColor('#A9DDE1'),
-                HexColor('#6EC9D1'),
-              ], texts: [
-                'Low',
-                'Normal'
-              ]),
+              visualMap: VisualMap(
+                  colors: [Colors.blue, Colors.blue], texts: ['Low', 'Normal']),
               indicator: [
                 IndicatorModel("English", 4),
                 IndicatorModel("Physics", 4),
