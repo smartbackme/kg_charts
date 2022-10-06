@@ -132,10 +132,10 @@ class _RadarMapWidgetState extends State<RadarWidget>
     }
     var w = MediaQuery.of(context).size.width;
     var painter = RadarMapPainter(w, top, widget.radarMap, (t, b) {
-      // setState(() {
-      // top = t;
-      // bottom = b;
-      // });
+      setState(() {
+        top = t;
+        bottom = b;
+      });
     }, node, tab, sk,
         textStyle: widget.textStyle,
         lineText: widget.lineText,
@@ -309,7 +309,8 @@ class RadarMapPainter extends CustomPainter {
             ..strokeWidth = radarMap.data[i].dataMarkerStyle.size
             ..color = radarMap.data[i].dataMarkerStyle.color ??
                 radarMap.data[i].connectLineStyle?.color ??
-                radarMap.data[i].dataAreaStyle.color);
+                radarMap.data[i].dataAreaStyle.color,
+          size: radarMap.data[i].dataMarkerStyle.size);
       drawRadarText(
           canvas,
           radarMap.data[i].data,
@@ -495,14 +496,14 @@ class RadarMapPainter extends CustomPainter {
   /// 绘制Data Marker
   drawDataMarker(
       Canvas canvas, List<double> value, List<double> maxList, Paint linePaint,
-      {drawRadarPath}) {
+      {drawRadarPath, double size = 5}) {
     double step = radarMap.radius / value.length; //每小段的长度
     // canvas.drawCircle(Offset(0, -step), 10, linePaint);
     for (int i = 0; i < value.length; i++) {
       double mark = value[i] / (maxList[i] / value.length);
       var deg = pi / 180 * (360 / value.length * i - 90);
       canvas.drawCircle(Offset(mark * step * cos(deg), mark * step * sin(deg)),
-          10, linePaint);
+          size, linePaint);
     }
   }
 
