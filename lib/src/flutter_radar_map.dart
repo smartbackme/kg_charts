@@ -505,7 +505,7 @@ class RadarMapPainter extends CustomPainter {
     //   print("${element.left} . ${element.top} 11");
     // });
 
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _widthHeight.call(top,bottom);
     });
 
