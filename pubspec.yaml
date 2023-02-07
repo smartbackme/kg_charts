@@ -1,5 +1,5 @@
 name: kg_charts
-description: charts utils
+description: kg_charts icon library. At present, there are only radar charts. Other types of charts may be added later.
 version: 0.0.5
 homepage: https://github.com/smartbackme/kg_charts
 
