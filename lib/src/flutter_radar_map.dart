@@ -10,15 +10,18 @@ import 'radar_utils.dart';
 class RadarWidget extends StatefulWidget {
   //数据传入
   final RadarMapModel radarMap;
+
   //文字风格
   final TextStyle? textStyle;
+
   //是否绘制图例
   final bool? isNeedDrawLegend;
+
   //是否绘制视觉映射
   final bool? isNeedDrawVisualMap;
 
   final LineText? lineText;
-  final DialogText? dilogText;
+  final DialogText? dialogText;
   final OutLineText? outLineText;
 
   final double? skewing;
@@ -30,7 +33,7 @@ class RadarWidget extends StatefulWidget {
       this.isNeedDrawLegend = false,
       this.isNeedDrawVisualMap = false,
       this.lineText,
-      this.dilogText,
+      this.dialogText,
       this.outLineText,
       this.skewing})
       : super(key: key) {
@@ -51,6 +54,7 @@ class _RadarMapWidgetState extends State<RadarWidget>
   List<Rect> node = [];
   TapModel tab = TapModel();
   final _counter = ValueNotifier(0);
+
   @override
   void initState() {
     super.initState();
@@ -126,41 +130,37 @@ class _RadarMapWidgetState extends State<RadarWidget>
   // RadarUtils.getHeight(widget.radarMap.radius, widget.radarMap.indicator.length
   @override
   Widget build(BuildContext context) {
-    double sk = (widget.skewing ?? 0.0) > 40 ? 40 : (widget.skewing ?? 0.0);
-    if (sk < 0) {
-      sk = 0;
-    }
-    var w = MediaQuery.of(context).size.width;
-    var painter = RadarMapPainter(w, top, widget.radarMap, (t, b) {
-      setState(() {
-        top = t;
-        bottom = b;
-      });
-    }, node, tab, sk,
-        textStyle: widget.textStyle,
-        lineText: widget.lineText,
-        outLineText: widget.outLineText,
-        dilogText: widget.dilogText,
-        repaint: _counter);
-
-    CustomPaint paint = CustomPaint(
-      size: Size(
-          w,
-          RadarUtils.getHeight(widget.radarMap.radius,
-                  widget.radarMap.indicator.length, widget.radarMap.shape) +
-              bottom +
-              top),
-      painter: painter,
-    );
-
+    double sk = max(0, min(widget.skewing ?? 0.0, 40));
     return Column(children: [
-      paint,
-      widget.isNeedDrawLegend == true
-          ? Offstage(
-              offstage: widget.isNeedDrawLegend!,
-              child: Padding(
-                padding: EdgeInsets.only(right: sk),
-                child: Container(
+      LayoutBuilder(builder: (context, constraints) {
+        var painter =
+            RadarMapPainter(constraints.maxWidth, top, widget.radarMap, (t, b) {
+          setState(() {
+            top = t;
+            bottom = b;
+          });
+        }, node, tab, sk,
+                textStyle: widget.textStyle,
+                lineText: widget.lineText,
+                outLineText: widget.outLineText,
+                dialogText: widget.dialogText,
+                repaint: _counter);
+        return CustomPaint(
+            size: Size(
+                constraints.maxWidth,
+                RadarUtils.getHeight(
+                        widget.radarMap.radius,
+                        widget.radarMap.indicator.length,
+                        widget.radarMap.shape) +
+                    bottom +
+                    top),
+            painter: painter);
+      }),
+      Offstage(
+          offstage: !widget.isNeedDrawLegend!,
+          child: Padding(
+              padding: EdgeInsets.only(right: sk),
+              child: Container(
                   width: double.infinity,
                   margin: const EdgeInsets.only(
                       top: 20, bottom: 20, left: 30, right: 30),
@@ -169,29 +169,14 @@ class _RadarMapWidgetState extends State<RadarWidget>
                     runSpacing: 4.0,
                     alignment: WrapAlignment.spaceAround,
                     children: widget.radarMap.legend
-                        .where((item) => item.name != "")
-                        .toList()
                         .map((item) => buildLegend(item.name, item.color,
                             textColor: item.textColor,
                             textFontSize: item.textFontSize))
                         .toList(),
-                  ),
-                ),
-              ))
-          : const SizedBox.shrink(),
-      Offstage(
-        offstage: !widget.isNeedDrawVisualMap!,
-        child: widget.radarMap.visualMap == null
-            ? const SizedBox.shrink()
-            : Container(
-                margin: const EdgeInsets.all(12),
-                child:
-                    buildVisualMap(widget.radarMap.visualMap ?? VisualMap())),
-      )
+                  ))))
     ]);
   }
-  // MainAxisAlignment.spaceAround
-
+// MainAxisAlignment.spaceAround
 }
 
 typedef LineText = String Function(int p, int length);
@@ -213,7 +198,7 @@ class RadarMapPainter extends CustomPainter {
   late Paint mDialogPaint; // 短直线路径
   late int elementLength; //维度 数量
   LineText? lineText;
-  DialogText? dilogText;
+  DialogText? dialogText;
   OutLineText? outLineText;
   final WidthHeight _widthHeight;
   double w;
@@ -221,11 +206,12 @@ class RadarMapPainter extends CustomPainter {
   List<Rect> node;
   TapModel tab;
   double skewing;
+
   RadarMapPainter(this.w, this.top, this.radarMap, this._widthHeight, this.node,
       this.tab, this.skewing,
       {this.textStyle,
       this.lineText,
-      this.dilogText,
+      this.dialogText,
       this.outLineText,
       Listenable? repaint})
       : super(repaint: repaint) {
@@ -623,7 +609,7 @@ class RadarMapPainter extends CustomPainter {
     }
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _widthHeight.call(top,bottom);
+      _widthHeight.call(top, bottom);
     });
   }
 }

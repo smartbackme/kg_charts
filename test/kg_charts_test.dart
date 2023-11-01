@@ -34,7 +34,7 @@ void main() {
       textStyle: const TextStyle(color: Colors.black, fontSize: 14),
       isNeedDrawLegend: true,
       lineText: (p, length) => "${(p * 100 ~/ length)}%",
-      dilogText: (IndicatorModel indicatorModel, List<LegendModel> legendModels,
+      dialogText: (IndicatorModel indicatorModel, List<LegendModel> legendModels,
           List<double> mapDataModels) {
         StringBuffer text = StringBuffer("");
         for (int i = 0; i < mapDataModels.length; i++) {
